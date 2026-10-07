@@ -1,18 +1,10 @@
-#include <iostream>
-#include <stdio.h>
-#include <queue>
-#include <fstream>
-#include <queue>
-#include <climits>
+#include "shortestPath.h"
 
-
-using namespace std;
-
-int getIndex(int row, int col, int numCols);
 int main(int argc, char* argv[]){
 
     ifstream file(argv[1]);
     ofstream outFile(argv[2]);
+
     int numCols;
     while(file >> numCols){
         vector<int> degrees;
@@ -23,7 +15,9 @@ int main(int argc, char* argv[]){
             file >> values[i];
         }
         
-        // Assigning the queue, counting number of inedges (Each row is a node where the columns are its connections)
+        // Assigning the queue, counting number of inedges, setting default distances
+        
+
         for(int col = 0; col < numCols; ++col){
             // Count = number of connections a node has
             int count = 0;
@@ -97,7 +91,4 @@ int main(int argc, char* argv[]){
     return 0;
 }
 
-int getIndex(int row, int col, int numCols){
-    int index = row * numCols + col;
-    return index;
-}
+
