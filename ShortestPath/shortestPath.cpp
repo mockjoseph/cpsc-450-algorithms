@@ -25,4 +25,15 @@ void initializeMatrix(vector<int>& values, queue<int>& q, vector<int>& dist, vec
         }
         dist.push_back(INT_MAX);
     }
+    return;
+}
+
+void writePathToFile(ofstream& outFile, vector<int> dist){
+    for(int i = 0; i < dist.size(); ++i){
+        if(i == dist.size() - 1){
+            outFile << dist[i] << endl;
+        }else{
+            outFile << dist[i] << ",";
+        }
+    }
 }

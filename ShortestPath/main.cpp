@@ -18,7 +18,6 @@ int main(int argc, char* argv[]){
         // Assigning the queue, counting number of inedges, setting default distances
         initializeMatrix(values, q, dist, degrees, numCols);
 
-        
 
         // Now we can start at the node with no in-edges and search
         while(!q.empty()){
@@ -54,13 +53,8 @@ int main(int argc, char* argv[]){
         }
 
         // Print out the results (distance to each node from source node)
-        for(int i = 0; i < dist.size(); ++i){
-            if(i == dist.size() - 1){
-                outFile << dist[i] << endl;
-            }else{
-                outFile << dist[i] << ",";
-            }
-        }
+        writePathToFile(outFile, dist);
+        
 
         string trash;
         file >> trash;

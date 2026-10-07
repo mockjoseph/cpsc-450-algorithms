@@ -12,5 +12,7 @@ using namespace std;
 
 int getIndex(int row, int col, int numCols);
 void initializeMatrix(vector<int>& values, queue<int>& q, vector<int>& dist, vector<int>& degrees, int numCols);
+void writePathToFile(ofstream& outFile, vector<int> dist);
+
 
 #endif
