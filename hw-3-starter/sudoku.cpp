@@ -1,6 +1,6 @@
 // FILE: sudoku.cpp
 // NAME: Joseph Mock
-// DATE: 11-9-2026
+// DATE: 11-10-2026
 // DESC: Function definitions for the HW-3 Sudoku solver.
 
 #include <fstream>
@@ -34,7 +34,13 @@ bool write_board(const std::string& filename, const Board& board)
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < N; j++){
+      if(j == N - 1){
+        f << board[i][j];
+        f << std::endl;
+        break;
+      }
       f << board[i][j];
+      f << " ";
     }
   }
   return true;
@@ -42,11 +48,11 @@ bool write_board(const std::string& filename, const Board& board)
 
 bool is_legal_value(const Board& board, int row, int col, int value)
 {
-  // TODO
-  // Need to search both row and column to see if this can be placed in here
   if(value == 0){
     return false;
   }
+
+  // Need to search both row and column to see if this can be placed in here
   // Check all column values
   for(int i = 0; i < N; i++){
     if(i == col){
@@ -74,6 +80,9 @@ bool is_legal_value(const Board& board, int row, int col, int value)
   return true;
 }
 
+// Extra helper function for seeing if a value is legal based on the sudoku box
+// Function is only called in is_legal_value()
+// is_legal_value() onl checks rows and columns
 bool is_legal_box_value(const Board& board, int row, int col, int value){
   int rowCorner = row / 3 * 3;
   int colCorner = col / 3 * 3;
@@ -93,7 +102,6 @@ bool is_legal_box_value(const Board& board, int row, int col, int value){
 }
 bool solve(Board& board, int row, int col)
 {
-  // TODO
   // This will be the original recursive call
 
   // Base Case, going row by column, so if row is out of bounds, we can exit
@@ -111,20 +119,23 @@ bool solve(Board& board, int row, int col)
         // Recurse on the next cell
         if(col == 8){
           if(solve(board, row + 1, 0)){
-            // Recurse worked
+            // Recurse worked, value is truly valid
             return true;
           }
         }else{
           if(solve(board, row, col + 1)){
-            //Recurse Worked
+            //Recurse Worked, value is truly valid
             return true;
           }
         }
         // If we reached this point, recurse did not work, so need to reset cell to 0
+        // Something later down the line broke so we need to reset the cell
         board[row][col] = 0;
       }
       
     }
+    // Tried all values for the cell, but none were legal
+    // Return false indicating need to backtrack somewhere
     return false;
   }// Filled cell case, recurse on the next cell
   else{
@@ -139,9 +150,12 @@ bool solve(Board& board, int row, int col)
 
 bool is_solution(const Board& puzzle, const Board& board)
 {
-  // TODO
+  // TODO : Figure out how the puzzle fits into this function
   for(int i = 0; i < N; i++){
     for(int j = 0; j < N; j++){
+      if((puzzle[i][j] != 0) && (puzzle[i][j] != board[i][j])){
+        return false;
+      }
       if(!is_legal_value(board, i, j, board[i][j])){
         return false;
       }

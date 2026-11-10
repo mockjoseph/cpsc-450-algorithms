@@ -49,6 +49,16 @@ void test_is_legal_value_empty_board()
 }
 
 // TODO: add your unit tests here
+void test_read_write_file(){
+  // Reading and writing a board without solving should output
+  // the same file diff
+  Board board{};
+  read_board("sudoku_easy.txt", board);
+  write_board("test_read_write.txt", board);
+  Board board2{};
+  read_board("test_read_write.txt", board2);
+  check(board2 == board, "Board read write with no changes should produce same board");
+}
 
 //----------------------------------------------------------------------
 // Main
@@ -68,9 +78,9 @@ int main(int argc, char* argv[])
   }
   // run the unit tests
   run_test("is_legal_value on an empty board", test_is_legal_value_empty_board);
-
+  run_test("read and write board same with no solution", test_read_write_file);
   // TODO: add one run_test call for each of your tests
-
+  //run_test("board_matches_easy", test_easy_is_solution);
   // print the totals
   std::cout << passed << " passed, " << failed << " failed\n";
   return failed == 0 ? 0 : 1;
