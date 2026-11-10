@@ -44,7 +44,9 @@ bool is_legal_value(const Board& board, int row, int col, int value)
 {
   // TODO
   // Need to search both row and column to see if this can be placed in here
-
+  if(value == 0){
+    return false;
+  }
   // Check all column values
   for(int i = 0; i < N; i++){
     if(i == col){
@@ -72,36 +74,15 @@ bool is_legal_value(const Board& board, int row, int col, int value)
   return true;
 }
 
-bool solve(Board& board, int row, int col)
-{
-  // TODO
-  // This will be the original recursive call
-
-  if(board[row][col] == 0){
-    for(int i = 1; i < N + 1; i++){
-      if(is_legal_value(board, row, col, i)){
-        board[row][col] = i;
-        return true;
-      }
-    }
-  }
-  
-  return false;
-}
-
-bool is_solution(const Board& puzzle, const Board& board)
-{
-  // TODO
-
-  return false;
-}
-
 bool is_legal_box_value(const Board& board, int row, int col, int value){
   int rowCorner = row / 3 * 3;
   int colCorner = col / 3 * 3;
 
   for(int i = 0; i < N / 3; i++){
     for(int j = 0; j < N / 3; j++){
+      if(i + rowCorner == row && col == j + colCorner){
+        continue;
+      }
       if(board[i + rowCorner][j + colCorner] == value){
         return false;
       }
@@ -109,4 +90,62 @@ bool is_legal_box_value(const Board& board, int row, int col, int value){
   }
   return true;
 
+}
+bool solve(Board& board, int row, int col)
+{
+  // TODO
+  // This will be the original recursive call
+
+  // Base Case, going row by column, so if row is out of bounds, we can exit
+  if(row == N){
+    return true;
+  }
+
+
+  // Empty cell
+  if(board[row][col] == 0){
+    for(int i = 1; i < N + 1; i++){
+      // If the value is legal, fill it
+      if(is_legal_value(board, row, col, i)){
+        board[row][col] = i;
+        // Recurse on the next cell
+        if(col == 8){
+          if(solve(board, row + 1, 0)){
+            // Recurse worked
+            return true;
+          }
+        }else{
+          if(solve(board, row, col + 1)){
+            //Recurse Worked
+            return true;
+          }
+        }
+        // If we reached this point, recurse did not work, so need to reset cell to 0
+        board[row][col] = 0;
+      }
+      
+    }
+    return false;
+  }// Filled cell case, recurse on the next cell
+  else{
+    if(col == 8){
+      return solve(board, row + 1, 0);
+    }else{
+      return solve(board, row, col + 1);
+    }
+  }
+  
+}
+
+bool is_solution(const Board& puzzle, const Board& board)
+{
+  // TODO
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < N; j++){
+      if(!is_legal_value(board, i, j, board[i][j])){
+        return false;
+      }
+    }
+  }
+  return true;
 }

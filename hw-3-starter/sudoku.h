@@ -28,6 +28,9 @@ bool write_board(const std::string& filename, const Board& board);
 // repeating a value in the cell's row, column, or 3x3 box.
 bool is_legal_value(const Board& board, int row, int col, int value);
 
+
+bool is_legal_box_value(const Board& board, int row, int col, int value);
+
 // Recursive DFS. Fills the empty cells starting at (row, col), in row
 // order. Returns true if the board is solved, leaving the solution in
 // board.
