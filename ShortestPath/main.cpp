@@ -19,6 +19,7 @@ int main(int argc, char* argv[]){
         initializeMatrix(values, q, dist, degrees, numCols);
 
 
+        // The main loop:
         // Now we can start at the node with no in-edges and search
         while(!q.empty()){
             int node = q.front();
