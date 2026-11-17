@@ -1,5 +1,5 @@
 // FILE: dfs_algos.cpp
-// NAME: <your name>
+// NAME: Joseph Mock
 // DATE: Fall, 2026
 // DESC: Function definitions for the DFS-based graph algorithms.
 
