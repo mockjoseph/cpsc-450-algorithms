@@ -21,6 +21,9 @@ AdjList::AdjList(int n)
 void AdjList::add_edge(int x, int y)
 {
   // TODO
+  if(x < 0 || x > vertex_count() - 1 || y < 0 || y > vertex_count() - 1){
+    return;
+  }
   out_edges[x].insert(y);
   in_edges[y].insert(x);
 }
@@ -47,7 +50,7 @@ bool AdjList::has_edge(int x, int y) const
 bool AdjList::has_vertex(int x) const
 {
   // TODO
-  if(0 <= x <= vertex_count()){
+  if(0 <= x && x <= vertex_count() - 1){
     return true;
   }
   return false;
@@ -56,17 +59,26 @@ bool AdjList::has_vertex(int x) const
 std::set<int> AdjList::out(int x) const
 {
   // TODO
+  if(x < 0 || x > vertex_count() - 1){
+    return {};
+  }
   return out_edges[x];
 }
 
 std::set<int> AdjList::in(int x) const
 {
   // TODO
+  if(x < 0 || x > vertex_count() - 1){
+    return {};
+  }
   return in_edges[x];
 }
 
 std::set<int> AdjList::adj(int x) const
 {
+  if(x < 0 || x > vertex_count() - 1){
+    return {};
+  }
   std::set<int> in_v = in(x);
   std::set<int> out_v = out(x);
   std::set<int> y = {};
@@ -91,7 +103,6 @@ int AdjList::edge_count() const
   int total = 0;
   for(int i = 0; i < out_edges.size(); i++){
     total += out_edges[i].size();
-    total += in_edges[i].size();
   }
   return total;
 }
