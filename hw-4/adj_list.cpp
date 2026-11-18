@@ -5,7 +5,7 @@
 
 #include <stdexcept>
 #include "adj_list.h"
-
+#include<iostream>
 AdjList::AdjList(int n)
 {
   // check n before sizing the vectors

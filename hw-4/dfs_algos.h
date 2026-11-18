@@ -1,5 +1,5 @@
 // FILE: dfs_algos.h
-// NAME: <your name>
+// NAME: Joseph Mock
 // DATE: Fall, 2026
 // DESC: Graph algorithms based on depth-first search (DFS).
 
