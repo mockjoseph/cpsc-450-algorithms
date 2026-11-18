@@ -16,7 +16,6 @@ std::vector<int> reversed(const std::set<int>& s)
 
 std::map<int,int> dfs_recursive(const AdjList& g, int s)
 {
-  // TODO
   // Base return case
   if(!g.has_vertex(s)){
     return {};
@@ -59,7 +58,6 @@ void dfs_visit(const AdjList& g, int x, std::vector<bool>& visited,
 
 std::map<int,int> dfs_iterative(const AdjList& g, int s)
 {
-  // TODO
   if(!g.has_vertex(s)){
     return {};
   }
@@ -106,7 +104,6 @@ std::map<int,int> dfs_iterative(const AdjList& g, int s)
 
 bool has_cycle(const AdjList& g)
 {
-  // TODO
   if(g.edge_count() == 0){
     return false;
   }
@@ -152,7 +149,7 @@ bool has_cycle(const AdjList& g)
           evaluatingChild = true;
         }
       }
-      
+
       // No child to evaluate so can pop stack and set path to black (done)
       if(!evaluatingChild){
         colors[x] = 2;
@@ -167,7 +164,49 @@ bool has_cycle(const AdjList& g)
 bool is_bipartite(const AdjList& g)
 {
   // TODO
-  return false;
+  // Can do this through two-coloring
+  // No two adjacent nodes can have the same color, using a 3rd value for uncolored for defaulting
+  // 0 -> NONE
+  // 1 -> WHITE
+  // 2 -> BLACK
+
+  std::vector<int> colors;
+  std::stack<int> st;
+
+  // mark all vertices as uncolored
+  for(int i = 0; i < g.vertex_count(); i ++){
+    colors.push_back(0);
+  }
+
+  // Push source and set vertex to white
+  for(int i = 0; i < g.vertex_count(); i++){
+    if(colors[i] > 0){
+      continue;
+    }
+    colors[i] = 1;
+    st.push(i);
+    while(!st.empty()){
+      int x = st.top();
+      int color = colors[x];
+      st.pop();
+      for(int v : g.adj(x)){
+        if(colors[v] == 0){
+          if(color == 1){
+            colors[v] = 2;
+          }
+          if(color == 2){
+            colors[v] = 1;
+          }
+          st.push(v);
+        }
+        if(colors[v] == color){
+          return false;
+        }
+      }
+    }
+  }
+  
+  return true;;
 }
 
 std::vector<int> topological_sort(const AdjList& g)
