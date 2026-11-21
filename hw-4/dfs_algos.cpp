@@ -212,11 +212,149 @@ bool is_bipartite(const AdjList& g)
 std::vector<int> topological_sort(const AdjList& g)
 {
   // TODO
-  return {};
+  // Like 3 coloring, just add nodes to topo order in the order they become black (reversed)
+  // First node to become black is the last in the order, and vice versa
+  // White : 0
+  // Gray : 1
+  // Black : 2
+  std::vector<int> colors;
+  std::vector<int> topoOrder;
+  std::vector<int> source;
+  // Set all vertices to white (0) and find source node
+  for(int i = 0; i < g.vertex_count(); i++){
+    colors.push_back(0);
+    if(g.in(i).empty()){
+      source.push_back(i);
+    }
+  }
+  // Loop through the sources (just in case graph is disconnected)
+  for(int v : source){
+
+    std::stack<int> st;
+    st.push(v);
+    while(!st.empty()){
+      int x = st.top();
+      // Set as visited / visiting
+      colors[x] = 1;
+      bool evaluatingChild = false;
+      for(int y : reversed(g.out(x))){
+        if(colors[y] == 1){
+          return {}; // Graph has cycle, return empty
+        }
+        if(colors[y] == 0){
+          st.push(y);
+          evaluatingChild = true;
+          break;
+        }
+      }
+      // Ended evaluation of the path
+      if(!evaluatingChild){
+        colors[x] = 2;
+        st.pop();
+        // Insert the value at the beginning of the list
+        topoOrder.insert(topoOrder.begin(), x);
+      }
+    }
+  }
+  
+  return topoOrder;
 }
 
 std::set<std::set<int>> strongly_connected_components(const AdjList& g)
 {
   // TODO
-  return {};
+
+  // Last node to turn black is a source
+  AdjList gr(g.vertex_count());
+  std::set<std::set<int>> sccs;
+
+  // Create a copy (reversed graph) 
+  for(int i = 0; i < g.vertex_count(); i++){
+    std::set<int> inE = g.in(i);
+    std::set<int> outE = g.out(i);
+    for(int e : inE){
+      gr.add_edge(i, e);
+    }
+  }
+
+  // Need to "topologically sort" gr
+  // Avoid cycle detection though
+  std::vector<int> colors;
+  std::vector<bool> visited;
+  std::map<int, int> parent;
+  std::vector<int> topoOrder;
+  for(int i = 0; i < g.vertex_count(); i++){
+    colors.push_back(0);
+    visited.push_back(false);
+  }
+  
+  // Need to iterate and look at all possible cycles since not given source
+  for(int i = 0; i < gr.vertex_count(); i++){
+    
+    if(colors[i] != 0){
+      continue;
+    }
+    // Re-init stack on each iteration for clarity
+    std::stack<int> st2;
+    st2.push(i);
+    while(!st2.empty()){
+      int x = st2.top();
+
+      // Mark vertex as visiting (gray)
+      colors[x] = 1;
+
+      // Using a boolean for evaluating child to know when to set current node to black
+      // Node should only become black when the full path has been evaluated
+      bool evaluatingChild = false;
+      for(int v : gr.out(x)){
+        if(colors[v] == 0){
+          // Child to evaluate, push onto stack and set bool to true
+          st2.push(v);
+          evaluatingChild = true;
+        }
+      }
+
+      // No child to evaluate so can pop stack and set path to black (done)
+      if(!evaluatingChild){
+        colors[x] = 2;
+        // Heres the differernce, add to topoOrder
+        topoOrder.push_back(x);
+        st2.pop();
+      }
+    }
+  }
+
+  // topoOrder isnt properly reversed yet
+  std::vector<int> rev;
+  for(int i = gr.vertex_count() - 1; i >= 0; i--){
+    rev.push_back(topoOrder[i]);
+  }
+  
+  // Need to maintain own visited arr
+  std::vector<bool> visitedC;
+  for(int i = 0; i < gr.vertex_count(); i ++){
+    visitedC.push_back(false);
+  }
+  
+  // Now we can build
+  for(int v : rev){
+    // Need to skip v if already in a component
+    if(visitedC[v]) continue;
+    
+    
+    // Can just pass in an empty parent so just starting at the current node were at in loop
+    std::map<int, int> parent;
+    dfs_visit(g, v, visitedC, parent);
+
+    // start with v since its never searched in dfs_visit, its just passed in
+    std::set<int> component = {v}; 
+    
+    for(std::pair<int, int> kv : parent){
+      component.insert(kv.first);
+    }
+    sccs.insert(component);
+    
+  }
+
+  return sccs;
 }
